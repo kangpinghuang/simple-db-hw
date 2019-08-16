@@ -58,7 +58,7 @@ public class Catalog {
             table.pkeyField = pkeyField;
         } else {
             TableItem table = new TableItem(file, pkeyField);
-            Integer tableId = tableNames.size();
+            Integer tableId = file.getId();
             tableNames.put(tableId, name);
             tables.put(name, table);
         }
