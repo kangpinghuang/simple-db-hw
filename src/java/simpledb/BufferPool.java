@@ -1,7 +1,11 @@
 package simpledb;
 
+import javafx.util.Pair;
+
 import java.io.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,6 +30,9 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
 
+    private int pageSize;
+    private Map<Pair<TransactionId, PageId>, Page> pages;
+
     /**
      * Creates a BufferPool that caches up to numPages pages.
      *
@@ -33,6 +40,8 @@ public class BufferPool {
      */
     public BufferPool(int numPages) {
         // some code goes here
+        this.pageSize = numPages;
+        pages = new ConcurrentHashMap<Pair<TransactionId, PageId>, Page>();
     }
     
     public static int getPageSize() {
@@ -64,10 +73,9 @@ public class BufferPool {
      * @param pid the ID of the requested page
      * @param perm the requested permissions on the page
      */
-    public  Page getPage(TransactionId tid, PageId pid, Permissions perm)
-        throws TransactionAbortedException, DbException {
-        // some code goes here
-        return null;
+    public  Page getPage(TransactionId tid, PageId pid, Permissions perm) {
+        Pair<TransactionId, PageId> key(tid, pid);
+        return pages.get(key);
     }
 
     /**

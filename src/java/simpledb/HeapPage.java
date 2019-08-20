@@ -17,6 +17,7 @@ public class HeapPage implements Page {
     final TupleDesc td;
     final byte header[];
     final Tuple tuples[];
+    // number of tuples
     final int numSlots;
 
     byte[] oldData;
