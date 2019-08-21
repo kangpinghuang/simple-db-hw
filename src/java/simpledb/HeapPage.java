@@ -3,6 +3,9 @@ package simpledb;
 import java.util.*;
 import java.io.*;
 
+import static java.lang.Math.floor;
+import static java.lang.Math.ceil;
+
 /**
  * Each instance of HeapPage stores data for one page of HeapFiles and 
  * implements the Page interface that is used by BufferPool.
@@ -19,6 +22,7 @@ public class HeapPage implements Page {
     final Tuple tuples[];
     // number of tuples
     final int numSlots;
+    private int tuplesPerPage;
 
     byte[] oldData;
     private final Byte oldDataLock=new Byte((byte)0);
@@ -68,6 +72,9 @@ public class HeapPage implements Page {
     */
     private int getNumTuples() {        
         // some code goes here
+        int pageSize = Database.getBufferPool().getPageSize();
+        int tupleSize = td.getSize();
+        tuplesPerPage = (int)floor((pageSize * 8) / (tupleSize * 8 + 1));
         return 0;
 
     }
@@ -76,10 +83,10 @@ public class HeapPage implements Page {
      * Computes the number of bytes in the header of a page in a HeapFile with each tuple occupying tupleSize bytes
      * @return the number of bytes in the header of a page in a HeapFile with each tuple occupying tupleSize bytes
      */
-    private int getHeaderSize() {        
-        
+    private int getHeaderSize() {
         // some code goes here
-        return 0;
+        int headerSize = (int) ceil((double)tuplesPerPage/8);
+        return headerSize;
                  
     }
     
@@ -113,7 +120,7 @@ public class HeapPage implements Page {
      */
     public HeapPageId getId() {
     // some code goes here
-    throw new UnsupportedOperationException("implement this");
+    return pid;
     }
 
     /**
@@ -291,7 +298,10 @@ public class HeapPage implements Page {
      */
     public boolean isSlotUsed(int i) {
         // some code goes here
-        return false;
+        int pos = i / 8;
+        int left = i % 8;
+        boolean ret = ((header[pos] >> left) & 1) == 1;
+        return ret;
     }
 
     /**

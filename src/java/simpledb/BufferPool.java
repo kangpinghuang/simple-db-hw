@@ -30,7 +30,7 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
 
-    private int pageSize;
+    private static int pageNum = DEFAULT_PAGES;
     private Map<Pair<TransactionId, PageId>, Page> pages;
 
     /**
@@ -40,7 +40,7 @@ public class BufferPool {
      */
     public BufferPool(int numPages) {
         // some code goes here
-        this.pageSize = numPages;
+        this.pageNum = numPages;
         pages = new ConcurrentHashMap<Pair<TransactionId, PageId>, Page>();
     }
     
@@ -74,7 +74,7 @@ public class BufferPool {
      * @param perm the requested permissions on the page
      */
     public  Page getPage(TransactionId tid, PageId pid, Permissions perm) {
-        Pair<TransactionId, PageId> key(tid, pid);
+        Pair<TransactionId, PageId> key = new Pair<TransactionId, PageId>(tid, pid);
         return pages.get(key);
     }
 
