@@ -290,7 +290,21 @@ public class HeapPage implements Page {
      */
     public int getNumEmptySlots() {
         // some code goes here
-        return 0;
+        int num = 0;
+        int i = 0;
+        int numTuples = getNumTuples();
+        for (byte flag : header) {
+            for (int j = 0; j < 8; ++j) {
+                ++i;
+                if (i >= numTuples) {
+                    return num;
+                }
+                if (((flag >> j) & 1) == 0) {
+                    num++;
+                }
+            }
+        }
+        return num;
     }
 
     /**
@@ -318,7 +332,24 @@ public class HeapPage implements Page {
      */
     public Iterator<Tuple> iterator() {
         // some code goes here
-        return null;
+        return new Iterator<Tuple>() {
+            private int idx = -1;
+            @Override
+            public boolean hasNext() {
+                return idx < numSlots;
+            }
+
+            @Override
+            public Tuple next() {
+                while (!isSlotUsed(idx)) {
+                    idx++;
+                }
+                if (idx >= numSlots) {
+                    return null;
+                }
+                return tuples[idx];
+            }
+        };
     }
 
 }
